@@ -1,0 +1,59 @@
+import numpy as np
+
+from hidden_markov import hmm
+
+states = ('s', 't')
+
+# list of possible observations
+
+possible_observation = ('A','B' )
+
+# The observations that we observe and feed to the model
+
+obs1 = ('A', 'B','B','A')
+
+obs2 = ('B', 'A','B')
+
+# Number of observation sequece 1 and observation sequence 2
+
+quantities_observations = [10, 20]
+
+observation_tuple = []
+
+observation_tuple.extend( [obs1,obs2] )
+
+# Input parameters as Numpy matrices
+
+start_probability = np.matrix( '0.5 0.5 ')
+
+transition_probability = np.matrix('0.6 0.4 ; 0.3 0.7 ')
+
+emission_probability = np.matrix( '0.3 0.7 ; 0.4 0.6 ' )
+
+test = hmm(states,possible_observation,start_probability,transition_probability,emission_probability)
+
+print(test.forward_algo(obs1))
+
+print(test.viterbi(obs1))
+
+prob = test.log_prob(observation_tuple, quantities_observations)
+
+print ("probability of sequence with original parameters : %f"%(prob))
+
+print(observation_tuple)
+
+print(quantities_observations)
+
+num_iter=1000
+
+emission,transition,start = test.train_hmm(observation_tuple,num_iter,quantities_observations)
+
+print(emission)
+
+print(start)
+
+print(transition)
+
+prob = test.log_prob(observation_tuple, quantities_observations)
+
+print ("probability of sequence after %d iterations : %f"%(num_iter,prob))
